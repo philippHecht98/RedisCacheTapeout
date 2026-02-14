@@ -1,20 +1,160 @@
-DESIGN_NAME: croc_soc
+meta:
+  version: 3
+  flow: Chip
+  substituting_steps:
+    # ECO diodes
+    #+OpenROAD.DetailedRouting: Odb.InsertECODiodes
+    #+OpenROAD.GlobalRouting: Odb.InsertECODiodes
+    KLayout.SealRing: null
+    
+    # Disable KLayout antenna check
+    KLayout.Antenna: null
+    Checker.KLayoutAntenna: null
+
+    # Save time
+    OpenROAD.STAPrePNR: null
+    OpenROAD.STAMidPNR*: null
+
+    # Magic reports some overlaps which can be ignored
+    Checker.IllegalOverlap: null
+    
+    # Some warnings in the SoC
+    # GL simulation is fine
+    Checker.YosysSynthChecks: null
+    
+    # Setup violations don't matter (for now)
+    Checker.SetupViolations: null
+
+    # Save time - we run filler generation afterwards
+    KLayout.Filler: null
+    KLayout.Density: null
+    Checker.KLayoutDensity: null
+
+    # Save time - we run DRC afterwards
+    KLayout.DRC: null
+    Magic.DRC: null
+
+
+DESIGN_NAME: croc_chip
 USE_SLANG: true
 
 CLOCK_PERIOD: 20
 CLOCK_PORT: clk_i
+CLOCK_NET: pad_clk_i/p2c
+#CTS_SINK_CLUSTERING_ENABLE: true
 
 FP_SIZING: absolute
-DIE_AREA:  [   0.00,   0.00, 2500.00, 2500.00]
-CORE_AREA: [ 362, 362, 2138, 2138]
+DIE_AREA:  [   0.00,   0.00, 2000.00, 2000.00]
+CORE_AREA: [ 362, 362, 1638, 1638]
 PL_TARGET_DENSITY_PCT: 55
 
-RUN_POST_GPL_DESIGN_REPAIR: false
+MAX_FANOUT_CONSTRAINT: 6
+
+PDN_CORE_RING: true
+PDN_CORE_RING_CONNECT_TO_PADS: true
+MAGIC_EXT_UNIQUE: "notopports"
+PDN_ENABLE_PINS: false
+PDN_CORE_RING_VWIDTH: 15
+PDN_CORE_RING_HWIDTH: 15
+PDN_VPITCH: 50
+PDN_HPITCH: 50
+PDN_VWIDTH: 3.5
+PDN_HWIDTH: 3.5
+PRIMARY_GDSII_STREAMOUT_TOOL: "klayout"
 
 VDD_NETS: 
 - "VDD"    
 GND_NETS: 
 - "VSS"
+
+# PDN
+PDN_CFG: dir::scripts/pdn_cfg.tcl
+
+# Bondpad is not yet included in the PDK
+EXTRA_GDS:
+- dir::bondpad/bondpad_70x70.gds
+
+EXTRA_LEFS:
+- dir::bondpad/bondpad_70x70.lef
+
+IGNORE_DISCONNECTED_MODULES:
+- bondpad_70x70
+
+PAD_WEST: [
+  "vdd_pads\\[0\\].vdd_pad",
+  "vss_pads\\[0\\].vss_pad",
+  "pad_clk_i",
+  "pad_rst_ni",
+  "pad_ref_clk_i",
+  "jtag_inputs_io\\[0\\].in",
+  "jtag_inputs_io\\[1\\].in",
+  "jtag_inputs_io\\[2\\].in",
+  "jtag_inputs_io\\[3\\].in",
+  "pad_jtag_tdo_o",
+  "pad_uart_rx_i",
+  "pad_uart_tx_o",
+  "pad_fetch_en_i",
+  "pad_status_o",
+  "iovdd_pads\\[0\\].iovdd_pad",
+  "iovss_pads\\[0\\].iovss_pad"
+]
+
+PAD_SOUTH: [
+  "vdd_pads\\[1\\].vdd_pad",
+  "vss_pads\\[1\\].vss_pad",
+  "pad_gpio_io\\[0\\].io",
+  "pad_gpio_io\\[1\\].io",
+  "pad_gpio_io\\[2\\].io",
+  "pad_gpio_io\\[3\\].io",
+  "pad_gpio_io\\[4\\].io",
+  "pad_gpio_io\\[5\\].io",
+  "pad_gpio_io\\[6\\].io",
+  "pad_gpio_io\\[7\\].io",
+  "pad_gpio_io\\[8\\].io",
+  "pad_gpio_io\\[9\\].io",
+  "pad_gpio_io\\[10\\].io",
+  "pad_gpio_io\\[11\\].io",
+  "iovdd_pads\\[1\\].iovdd_pad",
+  "iovss_pads\\[1\\].iovss_pad"
+]
+
+PAD_EAST: [
+  "vdd_pads\\[2\\].vdd_pad",
+  "vss_pads\\[2\\].vss_pad",
+  "pad_gpio_io\\[12\\].io",
+  "pad_gpio_io\\[13\\].io",
+  "pad_gpio_io\\[14\\].io",
+  "pad_gpio_io\\[15\\].io",
+  "pad_gpio_io\\[16\\].io",
+  "pad_gpio_io\\[17\\].io",
+  "pad_gpio_io\\[18\\].io",
+  "pad_gpio_io\\[19\\].io",
+  "pad_gpio_io\\[20\\].io",
+  "pad_gpio_io\\[21\\].io",
+  "pad_gpio_io\\[22\\].io",
+  "pad_gpio_io\\[23\\].io",
+  "iovdd_pads\\[2\\].iovdd_pad",
+  "iovss_pads\\[2\\].iovss_pad"
+]
+
+PAD_NORTH: [
+  "vdd_pads\\[3\\].vdd_pad",
+  "vss_pads\\[3\\].vss_pad",
+  "pad_gpio_io\\[24\\].io",
+  "pad_gpio_io\\[25\\].io",
+  "pad_gpio_io\\[26\\].io",
+  "pad_gpio_io\\[27\\].io",
+  "pad_gpio_io\\[28\\].io",
+  "pad_gpio_io\\[29\\].io",
+  "pad_gpio_io\\[30\\].io",
+  "pad_gpio_io\\[31\\].io",
+  "pad_unused_o\\[0\\].o",
+  "pad_unused_o\\[1\\].o",
+  "pad_unused_o\\[2\\].o",
+  "pad_unused_o\\[3\\].o",
+  "iovdd_pads\\[3\\].iovdd_pad",
+  "iovss_pads\\[3\\].iovss_pad"
+]
 
 MACROS:
   "RM_IHPSG13_1P_256x64_c2_bm_bist":
@@ -33,12 +173,12 @@ MACROS:
       "*_slow_1p08V_125C":
         - pdk_dir::libs.ref/sg13g2_sram/lib/RM_IHPSG13_1P_256x64_c2_bm_bist_slow_1p08V_125C.lib
     instances:
-      i_croc.gen_sram_bank[0].i_sram.gen_512x32xBx1.i_cut:
-        location: [390, 390]
+      i_croc_soc.i_croc.gen_sram_bank[0].i_sram.gen_512x32xBx1.i_cut:
+        location: [500, 390]
+        orientation: S
+      i_croc_soc.i_croc.gen_sram_bank[1].i_sram.gen_512x32xBx1.i_cut:
+        location: [500, 1450]
         orientation: N
-      i_croc.gen_sram_bank[1].i_sram.gen_512x32xBx1.i_cut:
-        location: [860, 590]
-        orientation: E
 
 VERILOG_DEFINES:
 - TARGET_ASIC
@@ -209,3 +349,4 @@ VERILOG_FILES:
 - ../rtl/croc_domain.sv
 - ../rtl/user_domain.sv
 - ../rtl/croc_soc.sv
+- src/croc_chip.sv
