@@ -31,7 +31,7 @@ meta:
     Checker.KLayoutDensity: null
 
     # Save time - we run DRC afterwards
-    #KLayout.DRC: null
+    KLayout.DRC: null
     Magic.DRC: null
 
 
@@ -47,8 +47,8 @@ CLOCK_PORT: clk_i
 CLOCK_NET: pad_clk_i/p2c
 
 FP_SIZING: absolute
-DIE_AREA:  [   0.00,   0.00, 2000.00, 2000.00]
-CORE_AREA: [ 362, 362, 1638, 1638]
+DIE_AREA:  [   0.00,   0.00, 3000.00, 3000.00]
+CORE_AREA: [ 362, 362, 2638, 2638]
 
 PL_TARGET_DENSITY_PCT: 60
 MAX_FANOUT_CONSTRAINT: 8
@@ -79,6 +79,13 @@ GND_NETS:
 
 # PDN
 PDN_CFG: dir::scripts/pdn_cfg.tcl
+
+PDN_OBSTRUCTIONS:
+  - [TopMetal2, 450, 450, 1000, 1000]
+
+ROUTING_OBSTRUCTIONS:
+  - [TopMetal2, 450, 450, 1000, 1000]
+
 
 # Bondpad is not yet included in the PDK
 EXTRA_GDS:
@@ -205,7 +212,24 @@ VERILOG_INCLUDE_DIRS:
 - ../rtl/common_cells/include
 - ../rtl/cve2/include
 - ../rtl/obi/include
+
 VERILOG_FILES:
+- ../src/DyC-RedisCacheLibrelane/src/top/src/cache_cfg_pkg.sv
+- ../rtl/croc_pkg.sv
+- ./src/user_pkg.sv
+- ../src/DyC-RedisCacheLibrelane/src/controller/src/ctrl_types_pkg.sv
+- ../src/DyC-RedisCacheLibrelane/src/interface/src/if_types_pkg.sv
+- ../src/DyC-RedisCacheLibrelane/src/memory/src/memory_dynamic_registerarray.sv
+- ../src/DyC-RedisCacheLibrelane/src/memory/src/memory_cell.sv
+- ../src/DyC-RedisCacheLibrelane/src/memory/src/memory_block.sv
+- ../src/DyC-RedisCacheLibrelane/src/controller/src/del_fsm.sv
+- ../src/DyC-RedisCacheLibrelane/src/controller/src/get_fsm.sv
+- ../src/DyC-RedisCacheLibrelane/src/controller/src/upsert_fsm.sv
+- ../src/DyC-RedisCacheLibrelane/src/controller/src/controller.sv
+- ../src/DyC-RedisCacheLibrelane/src/interface/src/obi_interface.sv
+- ../src/DyC-RedisCacheLibrelane/src/top/src/top.sv
+- ./src/user_domain.sv
+- ./src/user_rom.sv
 - ../rtl/common_cells/binary_to_gray.sv
 - ../rtl/common_cells/cb_filter_pkg.sv
 - ../rtl/common_cells/cc_onehot.sv
@@ -344,8 +368,7 @@ VERILOG_FILES:
 - ../rtl/riscv-dbg/dm_obi_top.sv
 - ../ihp13/tc_clk.sv
 - ../ihp13/tc_sram_impl.sv
-- ../rtl/croc_pkg.sv
-- ../rtl/user_pkg.sv
+
 - ../rtl/soc_ctrl/soc_ctrl_regs_pkg.sv
 - ../rtl/gpio/gpio_reg_pkg.sv
 - ../rtl/clint/clint_reg_pkg.sv
@@ -357,6 +380,15 @@ VERILOG_FILES:
 - ../rtl/clint/clint.sv
 - ../rtl/obi_timer/obi_timer.sv
 - ../rtl/croc_domain.sv
-- ../rtl/user_domain.sv
 - ../rtl/croc_soc.sv
 - src/croc_chip.sv
+
+# # Detailed Routing Tuning for violation resolution
+# DRT_OPT_ITERS: 128
+# DRT_SAVE_SNAPSHOTS: true
+# DRT_SAVE_DRC_REPORT_ITERS: 5
+
+# # Global Routing enhancements to reduce micro-congestion
+# GRT_ADJUSTMENT: 0.4
+# GRT_OVERFLOW_ITERS: 100
+# GRT_LAYER_ADJUSTMENTS: [0, 0.15, 0.15, 0.1, 0.05, 0, 0]
