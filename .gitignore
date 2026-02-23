@@ -1,3 +1,5 @@
 .bender
 tmp
 *.log
+**/croc-soc/*
+**/.DS_Store
